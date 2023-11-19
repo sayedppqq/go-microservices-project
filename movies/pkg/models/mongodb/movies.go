@@ -28,10 +28,14 @@ func (m *MovieModel) GetAllMovies() ([]models.Movie, error) {
 }
 
 func (m *MovieModel) GetMovieByID(id string) (*models.Movie, error) {
+	p, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
 	movie := models.Movie{}
-	filter := bson.D{primitive.E{Key: "_id", Value: id}}
+	filter := bson.D{primitive.E{Key: "_id", Value: p}}
 
-	err := m.C.FindOne(context.TODO(), filter).Decode(&movie)
+	err = m.C.FindOne(context.TODO(), filter).Decode(&movie)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, errors.New("no document find by this id")

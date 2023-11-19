@@ -29,10 +29,14 @@ func (m *ShowTimeModel) GetAllShowTimes() ([]models.ShowTime, error) {
 }
 
 func (m *ShowTimeModel) GetShowTimeByID(id string) (*models.ShowTime, error) {
+	p, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
 	st := models.ShowTime{}
-	filter := bson.D{primitive.E{Key: "_id", Value: id}}
+	filter := bson.D{primitive.E{Key: "_id", Value: p}}
 
-	err := m.C.FindOne(context.TODO(), filter).Decode(&st)
+	err = m.C.FindOne(context.TODO(), filter).Decode(&st)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, errors.New("no document find by this id")

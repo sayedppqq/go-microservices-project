@@ -1,7 +1,11 @@
-package main
+package app
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"path/filepath"
 	"text/template"
 )
 
@@ -25,4 +29,24 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 	}
+}
+func (app *application) getAPIContent(url string, templateData interface{}) error {
+	fmt.Println("urlllll", url)
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	json.Unmarshal(bodyBytes, templateData)
+	return nil
+}
+func (app *application) static(dir string) http.Handler {
+	dirCleaned := filepath.Clean(dir)
+	return http.StripPrefix("/static/", http.FileServer(http.Dir(dirCleaned)))
 }

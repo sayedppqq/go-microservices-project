@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"flag"
@@ -42,7 +42,7 @@ func (opt *connectionOptions) GetApplication(errorLog, infoLog *log.Logger) *app
 	}
 }
 func (opt *connectionOptions) GetHTTPServer(errorLog *log.Logger, serverURI string, app *application) *http.Server {
-	srv := &http.Server{
+	return &http.Server{
 		Addr:         serverURI,
 		ErrorLog:     errorLog,
 		Handler:      app.routes(),
@@ -56,9 +56,9 @@ func (opt *connectionOptions) pasrseCommandLineFlags() {
 	opt.serverAddr = flag.String("serverAddr", "", "HTTP server network address")
 	opt.serverPort = flag.Int("serverPort", 8080, "HTTP server network port")
 
-	opt.usersAPI = flag.String("usersAPI", "http://localhost:4000/api/users/", "Users API")
-	opt.moviesAPI = flag.String("moviesAPI", "http://localhost:4000/api/movies/", "Movies API")
-	opt.showtimesAPI = flag.String("showtimesAPI", "http://localhost:4000/api/showtimes/", "Showtimes API")
+	opt.usersAPI = flag.String("usersAPI", "http://localhost:4003/api/users/", "Users API")
+	opt.moviesAPI = flag.String("moviesAPI", "http://localhost:4001/api/movies/", "Movies API")
+	opt.showtimesAPI = flag.String("showtimesAPI", "http://localhost:4002/api/showtimes/", "Showtimes API")
 	opt.bookingsAPI = flag.String("bookingsAPI", "http://localhost:4000/api/bookings/", "Bookings API")
 	flag.Parse()
 }

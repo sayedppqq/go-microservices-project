@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"encoding/json"
@@ -12,12 +12,14 @@ func (app *application) all(w http.ResponseWriter, r *http.Request) {
 	users, err := app.users.GetAllUsers()
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	// Convert user list into json encoding
 	b, err := json.Marshal(users)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Println("Users have been listed")
@@ -42,12 +44,14 @@ func (app *application) findByID(w http.ResponseWriter, r *http.Request) {
 		}
 		// Any other error will send an internal server error
 		app.serverError(w, err)
+		return
 	}
 
 	// Convert user to json encoding
 	b, err := json.Marshal(m)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Println("Have been found a user")
@@ -65,12 +69,14 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	// Insert new user
 	insertResult, err := app.users.InsertNewUser(u)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Printf("New user have been created, id=%s", insertResult.InsertedID)
@@ -85,6 +91,7 @@ func (app *application) delete(w http.ResponseWriter, r *http.Request) {
 	deleteResult, err := app.users.DeleteUserById(id)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Printf("Have been eliminated %d user(s)", deleteResult.DeletedCount)

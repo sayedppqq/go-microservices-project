@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func main() {
+func Start() {
 	opt := connectionOptions{}
 
 	opt.pasrseCommandLineFlags()
@@ -28,6 +28,10 @@ func main() {
 			panic(err)
 		}
 	}()
+	infoLog.Println("pinging MongoDB database...")
+	if err := client.Ping(ctx, nil); err != nil {
+		errLog.Fatal(err)
+	}
 
 	infoLog.Println("Database connection established")
 

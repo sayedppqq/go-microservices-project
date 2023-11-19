@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func main() {
+func Start() {
 	opt := connectionOptions{}
 	opt.pasrseCommandLineFlags()
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
@@ -26,6 +26,10 @@ func main() {
 			panic(err)
 		}
 	}()
+	infoLog.Println("pinging MongoDB database...")
+	if err := client.Ping(ctx, nil); err != nil {
+		errLog.Fatal(err)
+	}
 
 	infoLog.Println("Database connection established")
 
@@ -34,7 +38,7 @@ func main() {
 	serverURI := fmt.Sprintf("%v:%d", *opt.serverAddr, *opt.serverPort)
 	srv := opt.GetHTTPServer(errLog, serverURI, app)
 
-	infoLog.Println("starting bookings server on ", serverURI)
+	infoLog.Println("starting users server on ", serverURI)
 
 	err = srv.ListenAndServe()
 	errLog.Fatal(err)

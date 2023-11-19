@@ -9,10 +9,9 @@ import (
 )
 
 func Start() {
-
 	opt := connectionOptions{}
 	opt.pasrseCommandLineFlags()
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime|log.Lshortfile)
 	errLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
@@ -27,7 +26,10 @@ func Start() {
 			panic(err)
 		}
 	}()
-
+	infoLog.Println("pinging MongoDB database...")
+	if err := client.Ping(ctx, nil); err != nil {
+		errLog.Fatal(err)
+	}
 	infoLog.Println("Database connection established")
 
 	app := opt.GetApplication(errLog, infoLog, client)

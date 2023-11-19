@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"encoding/json"
@@ -19,6 +19,7 @@ func (app *application) all(w http.ResponseWriter, r *http.Request) {
 	b, err := json.Marshal(showtimes)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Println("Showtimes have been listed")
@@ -43,12 +44,14 @@ func (app *application) findByID(w http.ResponseWriter, r *http.Request) {
 		}
 		// Any other error will send an internal server error
 		app.serverError(w, err)
+		return
 	}
 
 	// Convert showtime to json encoding
 	b, err := json.Marshal(m)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Println("Have been found a showtime")
@@ -73,12 +76,14 @@ func (app *application) findByDate(w http.ResponseWriter, r *http.Request) {
 		}
 		// Any other error will send an internal server error
 		app.serverError(w, err)
+		return
 	}
 
 	// Convert showtime to json encoding
 	b, err := json.Marshal(m)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Println("Have been found a showtime")
@@ -96,6 +101,7 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&m)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	// Insert new showtime
@@ -103,6 +109,7 @@ func (app *application) insert(w http.ResponseWriter, r *http.Request) {
 	insertResult, err := app.showtimes.InsertNewShowTime(m)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Printf("New showtime have been created, id=%s", insertResult.InsertedID)
@@ -117,6 +124,7 @@ func (app *application) delete(w http.ResponseWriter, r *http.Request) {
 	deleteResult, err := app.showtimes.DeleteShowTimeByID(id)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	app.infoLog.Printf("Have been eliminated %d showtime(s)", deleteResult.DeletedCount)

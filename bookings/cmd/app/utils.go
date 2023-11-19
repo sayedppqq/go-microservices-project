@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"context"
@@ -81,7 +81,7 @@ func (opt *connectionOptions) pasrseCommandLineFlags() {
 	opt.serverAddr = flag.String("serverAddr", "", "HTTP server network address")
 	opt.serverPort = flag.Int("serverPort", 4000, "HTTP server network port")
 	opt.mongoURI = flag.String("mongoURI", "mongodb://localhost:27017", "Database hostname url")
-	opt.mongoDatabase = flag.String("mongoDatabase", "movies", "Database name")
+	opt.mongoDatabase = flag.String("mongoDatabase", "bookings", "Database name")
 	opt.enableCred = flag.Bool("enableCredentials", false, "Enable the use of credentials for mongo connection")
 	flag.Parse()
 }
